@@ -15,7 +15,18 @@ def get_titles_from_search_results(filename):
     [('Book title 1', 'Author 1'), ('Book title 2', 'Author 2')...]
     """
 
-    pass
+    with open('search_results.htm') as fp:
+        soup = BeautifulSoup(fp, 'html.parser')
+    Booktitles = []
+    Authors = []
+    tags = soup.find_all('img')
+    for tag in tags:
+        t = tag.parent.get('title', None)
+        a = tag.parent.get('author',None)
+        if t and a != None:
+            Booktitles.append(t.strip('/n'))
+            Authors.append(t.strip('/n'))
+    return (Booktitles,Authors)
 
 
 def get_search_links():
@@ -49,7 +60,14 @@ def get_book_summary(book_url):
     Make sure to strip() any newlines from the book title and number of pages.
     """
 
-    pass
+    r = requests.get(book_url)
+    soup = BeautifulSoup(resp.content, 'html.parser')
+    parent = soup.find('div', id = "metacol")
+    book_title = parent.find(id = "book_title").text.strip('\n').strip()
+    author = parent.find('a', class_ = "authorName").text
+    pages = parent.find('span', itemprop ='pagenumber').text.strip('\n').strip()
+    return (bookTitle, author, pages)
+    
 
 
 def summarize_best_books(filepath):
@@ -63,7 +81,18 @@ def summarize_best_books(filepath):
     ("Fiction", "The Testaments (The Handmaid's Tale, #2)", "https://www.goodreads.com/choiceawards/best-fiction-books-2020") 
     to your list of tuples.
     """
-    pass
+    with open(filepath) as fh:
+        soup = BeautifulSoup(fh, 'html.parser')
+    books = soup.find_all(class_='category clearFix')
+    lists = list()
+    for book in books:
+        info = book.find('a')
+        link = info.get('href')
+        category = info.h4.text.strip('\n').strip()
+        name = info.img.get('alt', '')
+        lists.append(tuple((str(category),str(name),str(link))))
+    return lists
+
 
 
 def write_csv(data, filename):
@@ -86,7 +115,13 @@ def write_csv(data, filename):
 
     This function should not return anything.
     """
-    pass
+    dir = os.path.dirname(__file__)
+    outFile = open(os.path.join(dir, filename+'.csv'),'w',newline='')
+    csv_writer = csv.writer(outFile, delimiter = ',', quotechar = '"', quoting=csv.QUOTE_ALL)
+    csv_writer.writerow(['Book title','Author Name'])
+    for tup in data:
+        csv_writer.writerow(tup)
+    outFile.close()
 
 
 def extra_credit(filepath):
@@ -96,7 +131,12 @@ def extra_credit(filepath):
     Please see the instructions document for more information on how to complete this function.
     You do not have to write test cases for this function.
     """
-    pass
+    with open(filepath) as fh:
+        soup = BeautifulSoup(fh, 'html.parser')
+    div = soup.find(class_='readable stacked')
+    contents = div.contents[3].text
+    value = re.findall(r'[A-Z]\w{3}\w*(?:\s[A-Z]\w*)+', contents)
+    return value
 
 class TestCases(unittest.TestCase):
 

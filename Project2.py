@@ -175,7 +175,7 @@ class TestCases(unittest.TestCase):
         # check that the number of book summaries is correct (10)
         self.assertTrue(len(summaries)==10)
             
-            for item in summaries:
+        for item in summaries:
             # check that each item in the list is a tuple
             self.assertIsInstance(item, tuple)
             # check that each tuple has 3 elements

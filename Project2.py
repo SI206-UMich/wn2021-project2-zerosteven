@@ -155,7 +155,7 @@ class TestCases(unittest.TestCase):
         # check that the first book and author tuple is correct (open search_results.htm and find it)
 
         # check that the last title is correct (open search_results.htm and find it)
-
+        pass
     def test_get_search_links(self):
         # check that TestCases.search_urls is a list
 
@@ -164,55 +164,66 @@ class TestCases(unittest.TestCase):
 
         # check that each URL in the TestCases.search_urls is a string
         # check that each URL contains the correct url for Goodreads.com followed by /book/show/
-
+        pass
 
     def test_get_book_summary(self):
         # create a local variable – summaries – a list containing the results from get_book_summary()
         # for each URL in TestCases.search_urls (should be a list of tuples)
-
+        summaries = []
+        for url in self.new_release_urls:
+            summaries.append(get_book_summary(url))
         # check that the number of book summaries is correct (10)
-
+        self.assertTrue(len(summaries)==10)
+            
+            for item in summaries:
             # check that each item in the list is a tuple
-
+            self.assertIsInstance(item, tuple)
             # check that each tuple has 3 elements
-
+            self.assertEqual(len(item), 3)
             # check that the first two elements in the tuple are string
-
+            self.assertIsInstance(item[0], str)
+            self.assertIsInstance(item[1], str)
             # check that the third element in the tuple, i.e. pages is an int
-
+            self.assertIsInstance(item[2], int)
             # check that the first book in the search has 337 pages
-
+            self.assertTrue(len(item[0])==337)
 
     def test_summarize_best_books(self):
         # call summarize_best_books and save it to a variable
-
+        summary = summarize_best_books('best_books.htm')
         # check that we have the right number of best books (20)
-
+        self.assertTrue(len(summary) == 20)
             # assert each item in the list of best books is a tuple
-
+        for item in summary:
+            self.assertIsInstance(item, tuple)
             # check that each tuple has a length of 3
-
+            self.assertTrue(len(item)==3)
         # check that the first tuple is made up of the following 3 strings:'Fiction', "The Midnight Library", 'https://www.goodreads.com/choiceawards/best-fiction-books-2020'
-
+        self.assertEqual(summary[0],('Fiction', "The Midnight Library", 'https://www.goodreads.com/choiceawards/best-fiction-books-2020'))
         # check that the last tuple is made up of the following 3 strings: 'Picture Books', 'Antiracist Baby', 'https://www.goodreads.com/choiceawards/best-picture-books-2020'
-
+        self.assertEqual(summary[-1], ('Picture Books', 'Antiracist Baby', 'https://www.goodreads.com/choiceawards/best-picture-books-2020'))
 
     def test_write_csv(self):
         # call get_titles_from_search_results on search_results.htm and save the result to a variable
-
+        titles = get_titles_from_search_results('search_results.htm')
         # call write csv on the variable you saved and 'test.csv'
-
+        write_csv(titles,'titles')
         # read in the csv that you wrote (create a variable csv_lines - a list containing all the lines in the csv you just wrote to above)
+        with open('titles.csv') as fh:
+            file = fh.readlines()
+        csv_lines = []
+        for line in self.titles:
+            csv.append(get_titles_from_search_results(line))
 
 
         # check that there are 21 lines in the csv
-
+        self.assertTrue(len(titles)==21)
         # check that the header row is correct
-
+        self.assertEqual(file[0], """"Category","Book title","Author"\n""")
         # check that the next row is 'Harry Potter and the Deathly Hallows (Harry Potter, #7)', 'J.K. Rowling'
-
+        self.assertEqual(file[1], '''"Harry Potter and the Deathly Hallows (Harry Potter, #7)', 'J.K. Rowling"\n''')
         # check that the last row is 'Harry Potter: The Prequel (Harry Potter, #0.5)', 'J.K. Rowling'
-
+        self.assertEqual(file[1], '''"Harry Potter: The Prequel (Harry Potter, #0.5)', 'J.K. Rowling"\n''')
 
 
 if __name__ == '__main__':

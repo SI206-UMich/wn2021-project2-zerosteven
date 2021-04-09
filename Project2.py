@@ -141,19 +141,21 @@ def extra_credit(filepath):
 class TestCases(unittest.TestCase):
 
     # call get_search_links() and save it to a static variable: search_urls
-
+    def setUp(self):
+        self.search_urls = get_search_links()
 
     def test_get_titles_from_search_results(self):
         # call get_titles_from_search_results() on search_results.htm and save to a local variable
-
+        self.titles = get_titles_from_search_results('search_results.htm')
         # check that the number of titles extracted is correct (20 titles)
-
+        self.assertTrue(len(self.titles)==20)
         # check that the variable you saved after calling the function is a list
-
+        self.assertIsInstance(self.titles, list)
         # check that each item in the list is a tuple
-
+        for title in self.titles:
+            self.assertIsInstance(title, tuple)
         # check that the first book and author tuple is correct (open search_results.htm and find it)
-
+        
         # check that the last title is correct (open search_results.htm and find it)
         pass
     def test_get_search_links(self):
@@ -169,24 +171,9 @@ class TestCases(unittest.TestCase):
     def test_get_book_summary(self):
         # create a local variable – summaries – a list containing the results from get_book_summary()
         # for each URL in TestCases.search_urls (should be a list of tuples)
-        summaries = []
-        for url in self.new_release_urls:
-            summaries.append(get_book_summary(url))
+        
         # check that the number of book summaries is correct (10)
-        self.assertTrue(len(summaries)==10)
-            
-        for item in summaries:
-            # check that each item in the list is a tuple
-            self.assertIsInstance(item, tuple)
-            # check that each tuple has 3 elements
-            self.assertEqual(len(item), 3)
-            # check that the first two elements in the tuple are string
-            self.assertIsInstance(item[0], str)
-            self.assertIsInstance(item[1], str)
-            # check that the third element in the tuple, i.e. pages is an int
-            self.assertIsInstance(item[2], int)
-            # check that the first book in the search has 337 pages
-            self.assertTrue(len(item[0])==337)
+        pass
 
     def test_summarize_best_books(self):
         # call summarize_best_books and save it to a variable
